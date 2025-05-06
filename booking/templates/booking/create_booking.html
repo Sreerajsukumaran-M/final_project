@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book {{ product.name }} | Mall Management System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-hover: #1D4ED8;
+            --secondary: #64748B;
+            --dark: #1E293B;
+            --light: #F8FAFC;
+            --border: #E2E8F0;
+            --success: #10B981;
+            --error: #EF4444;
+            --radius: 8px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #F1F5F9;
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+        
+        /* Header Styles */
+        .header {
+            background-color: white;
+            padding: 16px 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+        
+        .breadcrumbs {
+            font-size: 0.875rem;
+            color: var(--secondary);
+        }
+        
+        .breadcrumbs a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        /* Main Content */
+        .container {
+            flex: 1;
+            padding: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        /* Booking Card */
+        .booking-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .product-info {
+            flex: 1;
+            padding: 32px;
+            background: linear-gradient(135deg, #F9FAFB 0%, #F1F5F9 100%);
+            border-right: 1px solid var(--border);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background-color: #E2E8F0;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .product-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .product-store {
+            color: var(--secondary);
+            margin-bottom: 16px;
+            font-size: 0.875rem;
+        }
+        
+        .product-details {
+            margin-top: 24px;
+        }
+        
+        .detail-item {
+            display: flex;
+            margin-bottom: 12px;
+            font-size: 0.875rem;
+        }
+        
+        .detail-label {
+            font-weight: 500;
+            min-width: 100px;
+            color: var(--secondary);
+        }
+        
+        /* Booking Form */
+        .booking-form {
+            flex: 1;
+            padding: 32px;
+        }
+        
+        .form-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            transition: border-color 0.2s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .time-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .submit-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 12px 24px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 16px;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: white;
+            padding: 16px 24px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--secondary);
+            border-top: 1px solid var(--border);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .booking-card {
+                flex-direction: column;
+            }
+            
+            .product-info {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            
+            .time-fields {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">BOOKING</div>
+        <div class="breadcrumbs">
+            <a href="{% url 'customer_product_list' product.store.id %}">{{ product.store.name }}</a> &gt; 
+            Book {{ product.name }}
+        </div>
+    </header>
+    
+    <main class="container">
+        <h1 class="page-title">
+            <i class="bi bi-calendar-plus"></i> Product Booking
+        </h1>
+        
+        <div class="booking-card">
+            <div class="product-info">
+                <div class="product-image">
+                    {% if product.product_img %}
+                    <img src="{{ product.product_img.url }}" alt="{{ product.name }}" class="product-image">
+                    {% else %}
+                        <i class="bi bi-image" style="font-size: 2rem;"></i>
+                    {% endif %}
+                </div>
+                
+                <h2 class="product-title">{{ product.name }}</h2>
+                <div class="product-store">{{ product.store.name }}</div>
+                
+                <div class="product-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Category:</span>
+                        <span>{{ product.category }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Price:</span>
+                        <span>${{ product.price }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Availability:</span>
+                        <span>In Stock</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="booking-form">
+                <h2 class="form-title">
+                    <i class="bi bi-clock"></i> Booking Details
+                </h2>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="time-fields">
+                        <div class="form-group">
+                            <label for="id_start_time" class="form-label">Start Time</label>
+                            {{ form.start_time }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_end_time" class="form-label">End Time</label>
+                            {{ form.end_time }}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_notes" class="form-label">Special Instructions</label>
+                        {{ form.notes }}
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <i class="bi bi-check-circle"></i> Confirm Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        &copy; 2023 Mall Management System. All rights reserved.
+    </footer>
+</body>
+</html>

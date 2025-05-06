@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ store.name }} | Mall Management Dashboard</title>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6C4AB6;
+            --primary-light: #8D72E1;
+            --primary-lighter: #B9E0FF;
+            --secondary: #4D96FF;
+            --accent: #FF7BA9;
+            --dark: #1E1E2C;
+            --darker: #161622;
+            --light: #F8F9FF;
+            --lighter: #F0F4FF;
+            --gray: #8B8E99;
+            --light-gray: #E6E9F2;
+            --success: #4CCD99;
+            --warning: #FFB84C;
+            --danger: #FF5C8D;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --sidebar-width: 260px;
+            --header-height: 80px;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--lighter);
+            color: var(--dark);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: linear-gradient(180deg, var(--dark), var(--darker));
+            color: white;
+            padding: 30px 0;
+            position: fixed;
+            width: var(--sidebar-width);
+            height: 100vh;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-header {
+            padding: 0 20px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .store-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(108, 74, 182, 0.3);
+        }
+
+        .store-name {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            letter-spacing: 0.2px;
+        }
+
+        .store-category {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.65);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3px 8px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0 10px;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(3px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(90deg, rgba(108, 74, 182, 0.3), transparent);
+            border-left: 3px solid var(--primary-light);
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            font-size: 1.05rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .user-role {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            color: var(--accent);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            grid-column: 2;
+            padding: 25px;
+            margin-left: var(--sidebar-width);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            background: white;
+            padding: 18px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .page-title h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 5px;
+            letter-spacing: -0.2px;
+        }
+
+        .page-title p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: var(--light);
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .notification-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            background: var(--accent);
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 22px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            transition: height 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .card:hover::after {
+            height: 6px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .card-icon.primary {
+            background: rgba(108, 74, 182, 0.1);
+            color: var(--primary);
+        }
+
+        .card-icon.success {
+            background: rgba(76, 205, 157, 0.1);
+            color: var(--success);
+        }
+
+        .card-icon.warning {
+            background: rgba(255, 184, 76, 0.1);
+            color: var(--warning);
+        }
+
+        .card-icon.danger {
+            background: rgba(255, 92, 141, 0.1);
+            color: var(--danger);
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .card-value {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 12px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .card-footer {
+            font-size: 0.8rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+        }
+
+        .card-footer i {
+            margin-right: 5px;
+        }
+
+        .positive {
+            color: var(--success);
+        }
+
+        .negative {
+            color: var(--danger);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .action-btn {
+            background: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            transition: height 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-btn:hover::before {
+            height: 6px;
+        }
+
+        .action-btn:hover .action-icon {
+            background: white;
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .action-btn:hover .action-text {
+            color: white;
+        }
+
+        .action-icon {
+            width: 46px;
+            height: 46px;
+            background: rgba(108, 74, 182, 0.1);
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .action-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--dark);
+            transition: color 0.3s ease;
+        }
+
+        /* Recent Products Section */
+        .section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 22px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+            position: relative;
+            padding-left: 14px;
+            letter-spacing: -0.2px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            height: 70%;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-light));
+            border-radius: 2px;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-all {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .view-all:hover {
+            color: var(--primary-light);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            position: relative;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            transition: height 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .product-card:hover::before {
+            height: 6px;
+        }
+
+        .product-image-container {
+            height: 170px;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--accent);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            z-index: 1;
+        }
+
+        .product-details {
+            padding: 18px;
+        }
+
+        .product-name {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .product-price {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .product-description {
+            color: var(--gray);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .product-added {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .product-action {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .product-action:hover {
+            color: var(--primary);
+        }
+
+        .product-action.delete:hover {
+            color: var(--danger);
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--gray);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            color: var(--light-gray);
+            margin-bottom: 20px;
+        }
+
+        .empty-text {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                grid-column: 1;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-image-container {
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="store-logo">{{ store.name|slice:":1"|upper }}</div>
+                <h3 class="store-name">{{ store.name }}</h3>
+                <p class="store-category">{{ store.category|default:"Mall Store" }}</p>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="bi bi-speedometer2"></i>
+                        <span class="nav-label">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'product_list' store.id %}" class="nav-link">
+                        <i class="bi bi-box-seam"></i>
+                        <span class="nav-label">Products</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'shop_bookings' %}" class="nav-link">
+                        <i class="bi bi-calendar-check"></i>
+                        <span class="nav-label">Bookings</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'shop_offers' store.id %}" class="nav-link">
+                        <i class="bi bi-percent"></i>
+                        <span class="nav-label">Offers</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-graph-up"></i>
+                        <span class="nav-label">Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-gear"></i>
+                        <span class="nav-label">Settings</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">{{ request.user.username|slice:":1"|upper }}</div>
+                    <div class="user-info">
+                        <div class="user-name">{{ request.user.username }}</div>
+                        <div class="user-role">Store Manager</div>
+                    </div>
+                    <a href="{% url 'mall_logout' %}" class="logout-btn">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <div class="page-title">
+                    <h1>Store Dashboard</h1>
+                    <p>Welcome back, {{ request.user.username }}! Here's what's happening today.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="notification-btn">
+                        <i class="bi bi-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Total Products</h3>
+                        <div class="card-icon primary">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">{{ products|length }}</div>
+                    <div class="card-footer">
+                        <i class="bi bi-arrow-up-circle positive"></i>
+                        <span>12% from last month</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Total Sales</h3>
+                        <div class="card-icon success">
+                            <i class="bi bi-currency-rupee"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">₹{{ total_sales|default:"0.00" }}</div>
+                    <div class="card-footer">
+                        <i class="bi bi-arrow-up-circle positive"></i>
+                        <span>8% from last month</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Last Added</h3>
+                        <div class="card-icon warning">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">{{ products.0.created_at|date:"M d"|default:"-" }}</div>
+                    <div class="card-footer">
+                        <i class="bi bi-info-circle"></i>
+                        <span>Most recent product</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Active Offers</h3>
+                        <div class="card-icon danger">
+                            <i class="bi bi-percent"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">3</div>
+                    <div class="card-footer">
+                        <i class="bi bi-arrow-down-circle negative"></i>
+                        <span>2 ending soon</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <a href="{% url 'add_product' store.id %}" class="action-btn">
+                    <div class="action-icon">
+                        <i class="bi bi-plus-circle"></i>
+                    </div>
+                    <span class="action-text">Add Product</span>
+                </a>
+                
+                <a href="{% url 'product_list' store.id %}" class="action-btn">
+                    <div class="action-icon">
+                        <i class="bi bi-grid"></i>
+                    </div>
+                    <span class="action-text">Manage Products</span>
+                </a>
+                
+                <a href="{% url 'shop_bookings' %}" class="action-btn">
+                    <div class="action-icon">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+                    <span class="action-text">View Bookings</span>
+                </a>
+                
+                <a href="{% url 'shop_offers' store.id %}" class="action-btn">
+                    <div class="action-icon">
+                        <i class="bi bi-percent"></i>
+                    </div>
+                    <span class="action-text">Manage Offers</span>
+                </a>
+            </div>
+            
+            <!-- Recent Products Section -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Recently Added Products</h2>
+                    <div class="section-actions">
+                        <a href="{% url 'product_list' store.id %}" class="view-all">
+                            View All <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="products-grid">
+                    {% for product in products|slice:":4" %}
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            {% if product.product_img %}
+                                <img src="{{ product.product_img.url }}" alt="{{ product.name }}" class="product-image">
+                            {% else %}
+                                <i class="bi bi-image" style="font-size: 3rem; color: var(--gray);"></i>
+                            {% endif %}
+                            <span class="product-badge">New</span>
+                        </div>
+                        <div class="product-details">
+                            <h3 class="product-name">{{ product.name }}</h3>
+                            <div class="product-meta">
+                                <span>{{ product.category|default:"Uncategorized" }}</span>
+                                <span>SKU: {{ product.sku|default:"-" }}</span>
+                            </div>
+                            <div class="product-price">₹{{ product.price }}</div>
+                            <p class="product-description">{{ product.description|truncatechars:100 }}</p>
+                            <div class="product-footer">
+                                <div class="product-added">
+                                    <i class="bi bi-calendar"></i> {{ product.created_at|date:"M d, Y" }}
+                                </div>
+                                <div class="product-actions">
+                                    <button class="product-action" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="product-action delete" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="bi bi-box"></i>
+                        </div>
+                        <h3 class="empty-text">No products found</h3>
+                        <a href="{% url 'add_product' store.id %}" class="action-btn" style="width: auto; padding: 12px 25px; display: inline-flex; flex-direction: row;">
+                            <div class="action-icon" style="width: 30px; height: 30px; font-size: 1rem; margin-bottom: 0; margin-right: 10px;">
+                                <i class="bi bi-plus"></i>
+                            </div>
+                            <span class="action-text">Add Your First Product</span>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add interactive animations
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Add click effect to action buttons
+            const actionBtns = document.querySelectorAll('.action-btn');
+            actionBtns.forEach(btn => {
+                btn.addEventListener('mousedown', function() {
+                    this.style.transform = 'translateY(1px)';
+                });
+                btn.addEventListener('mouseup', function() {
+                    this.style.transform = 'translateY(-3px)';
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

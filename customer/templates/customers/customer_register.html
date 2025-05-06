@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Registration</title>
+
+    <!-- Bootstrap & FontAwesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+
+    <style>
+        /* Background with light gradient transition */
+        body {
+            background: linear-gradient(-45deg, #f8f9fa, #e9ecef, #f8f9fa, #e9ecef);
+            background-size: 400% 400%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "Arial", sans-serif;
+            margin: 0;
+            color: #343a40; /* Dark text color */
+            animation: gradientAnimation 10s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Full-Page Registration Container */
+        .registration-container {
+            background: #ffffff; /* White background */
+            padding: 60px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px; /* Adjust max-width as needed */
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Title */
+        .registration-container h1 {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #343a40; /* Dark text color */
+        }
+
+        /* Form Fields */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 8px;
+            color: #343a40; /* Dark text color */
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #ffffff; /* White background */
+            color: #343a40; /* Dark text color */
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #6f42c1; /* Purple */
+            outline: none;
+            box-shadow: 0 0 8px rgba(111, 66, 193, 0.4);
+            transform: scale(1.02);
+        }
+
+        /* Register Button */
+        .btn-register {
+            background: #6f42c1; /* Purple */
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            width: 100%;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-register:hover {
+            background: #5a32a3; /* Darker Purple */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Login Link */
+        .login-link {
+            display: block;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6f42c1; /* Purple */
+            text-decoration: none;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .login-link:hover {
+            color: #5a32a3; /* Darker Purple */
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6c757d; /* Gray text color */
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+   <!-- customer_register.html -->
+<div class="registration-container">
+    <h1>Customer Registration</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Display form errors if any -->
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- Form Fields -->
+        <div class="form-group">
+            <label for="id_username"><i class="fas fa-user"></i> Username</label>
+            {{ form.username }}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_email"><i class="fas fa-envelope"></i> Email</label>
+            {{ form.email }}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_password1"><i class="fas fa-lock"></i> Password</label>
+            {{ form.password1 }}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_password2"><i class="fas fa-lock"></i> Confirm Password</label>
+            {{ form.password2 }}
+        </div>
+
+        <button type="submit" class="btn btn-register">
+            <i class="fas fa-user-plus"></i> Register
+        </button>
+    </form>
+
+    <a href="{% url 'customer_login' %}" class="login-link">
+        Already have an account? Login here.
+    </a>
+</div>
+
+</body>
+</html>

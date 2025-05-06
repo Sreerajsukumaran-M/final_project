@@ -1,0 +1,144 @@
+<div class="container">
+    <h1>📌 Your Shop Bookings</h1>
+
+    <div class="bookings-list">
+        {% for booking in bookings %}
+        <div class="booking-card">
+            <!-- Booking Header -->
+            <div class="booking-header">
+                <span class="status-badge status-{{ booking.status }}">
+                    {{ booking.get_status_display }}
+                </span>
+                <h3 class="product-name">{{ booking.product.name }}</h3>
+            </div>
+
+            <!-- Booking Details -->
+            <div class="booking-details">
+                <p><strong>👤 Customer:</strong> {{ booking.customer.username }}</p>
+                <p><strong>📅 Booking Period:</strong> 
+                    {{ booking.start_time|date:"M d, Y H:i" }} → {{ booking.end_time|date:"M d, Y H:i" }}
+                </p>
+                <p><strong>📝 Notes:</strong> {{ booking.notes|default:"None" }}</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="booking-actions">
+                <a href="{% url 'booking_details' booking.id %}" class="btn-primary">
+                    🔄 Update Status
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <p class="no-bookings">❌ No bookings found for your shop.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Styles -->
+<style>
+    /* General Styles */
+    body {
+        font-family: "Poppins", sans-serif;
+        background: #f4f4f4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 26px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    /* Booking Card */
+    .booking-card {
+        background: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 15px;
+    }
+
+    .booking-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+
+    .product-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #444;
+    }
+
+    /* Status Badge */
+    .status-badge {
+        padding: 6px 12px;
+        font-size: 14px;
+        font-weight: bold;
+        border-radius: 20px;
+        text-transform: capitalize;
+    }
+
+    .status-pending { background: #ffeb3b; color: #333; }
+    .status-processing { background: #03a9f4; color: white; }
+    .status-shipped { background: #673ab7; color: white; }
+    .status-delivered { background: #4caf50; color: white; }
+    .status-cancelled { background: #f44336; color: white; }
+
+    /* Booking Details */
+    .booking-details p {
+        margin: 5px 0;
+        font-size: 15px;
+        color: #555;
+    }
+
+    /* Buttons */
+    .btn-primary {
+        display: block;
+        width: 100%;
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.3s;
+        text-decoration: none;
+    }
+
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+
+    .no-bookings {
+        text-align: center;
+        font-size: 16px;
+        color: #777;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .container {
+            padding: 1.5rem;
+        }
+    }
+</style>

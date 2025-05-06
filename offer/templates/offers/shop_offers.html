@@ -1,0 +1,171 @@
+<!-- Google Fonts & Bootstrap Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(to right, #e0ecf8, #f8f9fa);
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+
+  .header-section h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1e3a8a;
+  }
+
+  .create-btn {
+    background-color: #2563eb;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.3s;
+  }
+
+  .create-btn:hover {
+    background-color: #1d4ed8;
+  }
+
+  .offer-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .offer-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .offer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .offer-header h5 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .offer-status {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .active {
+    background-color: #d1fae5;
+    color: #047857;
+  }
+
+  .expired {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+
+  .offer-desc {
+    margin: 10px 0;
+    color: #374151;
+    font-size: 15px;
+  }
+
+  .offer-meta {
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  .offer-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn-sm {
+    padding: 6px 14px;
+    font-size: 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+  }
+
+  .btn-edit {
+    background-color: #3b82f6;
+  }
+
+  .btn-delete {
+    background-color: #ef4444;
+  }
+
+  .no-offers {
+    padding: 40px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 18px;
+  }
+</style>
+
+<div class="container">
+  <div class="header-section">
+    <h2>🎁 Manage Offers for {{ store.name }}</h2>
+    <a href="{% url 'create_offer' store.id %}" class="create-btn">
+      <i class="bi bi-plus-circle"></i> Create New Offer
+    </a>
+  </div>
+
+  {% if offers %}
+    {% for offer in offers %}
+    <div class="offer-card">
+      <div class="offer-header">
+        <h5>{{ offer.title }}</h5>
+        <span class="offer-status {% if offer.is_current %}active{% else %}expired{% endif %}">
+          {% if offer.is_current %}Active{% else %}Expired{% endif %}
+        </span>
+      </div>
+      <p class="offer-desc">{{ offer.description }}</p>
+      <div class="offer-meta">
+        {% if offer.discount_percentage %}
+          <strong>{{ offer.discount_percentage }}% OFF</strong>
+        {% else %}
+          <strong>₹{{ offer.discount_amount }} OFF</strong>
+        {% endif %}
+        | Valid until: {{ offer.end_date }}
+      </div>
+      <div class="offer-actions">
+        <a href="{% url 'update_offer' offer.id %}" class="btn-sm btn-edit"><i class="bi bi-pencil-square"></i> Edit</a>
+        <a href="{% url 'delete_offer' offer.id %}" class="btn-sm btn-delete"><i class="bi bi-trash"></i> Delete</a>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="no-offers">
+      <i class="bi bi-info-circle-fill"></i> No offers created yet.
+    </div>
+  {% endif %}
+</div>

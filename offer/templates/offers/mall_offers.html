@@ -1,0 +1,32 @@
+
+<h2>Current Offers in Mall</h2>
+
+<div class="row">
+    {% for offer in offers %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            {% if offer.offer_image %}
+            <img src="{{ offer.offer_image.url }}" class="card-img-top" alt="{{ offer.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ offer.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ offer.store.name }}</h6>
+                <p class="card-text">{{ offer.description }}</p>
+                <p class="text-success">
+                    {% if offer.discount_percentage %}
+                    {{ offer.discount_percentage }}% OFF
+                    {% else %}
+                    ₹{{ offer.discount_amount }} OFF
+                    {% endif %}
+                </p>
+                <p class="text-muted">Valid until: {{ offer.end_date }}</p>
+                <a href="{% url 'store_offers' offer.store.id %}" class="btn btn-primary">View Store Offers</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">No current offers available in this mall.</div>
+    </div>
+    {% endfor %}
+</div>

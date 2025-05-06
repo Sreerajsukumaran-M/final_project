@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shops in {{ mall.name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6C5CE7;
+            --primary-light: #A29BFE;
+            --primary-dark: #5649C0;
+            --secondary-color: #FF7675;
+            --secondary-light: #FFA8A8;
+            --accent-color: #00B894;
+            --accent-light: #55EFC4;
+            --text-color: #2D3436;
+            --text-light: #636E72;
+            --light-gray: #F5F6FA;
+            --medium-gray: #DFE6E9;
+            --dark-gray: #B2BEC3;
+            --white: #FFFFFF;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --box-shadow-hover: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --border-radius: 16px;
+            --border-radius-sm: 8px;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(245, 247, 250, 0.85);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            color: var(--primary-dark);
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .location {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .location i {
+            color: var(--primary-color);
+        }
+        
+        .location strong {
+            color: var(--primary-dark);
+        }
+        
+        /* Compact Search Bar */
+        .search-container {
+            margin-bottom: 2rem;
+            position: relative;
+            max-width: 500px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.6rem 1.2rem;
+            padding-left: 2.5rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(5px);
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+        
+        /* Single Slide Offers Carousel */
+        .offers-hero {
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .offers-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .view-all-offers {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.6rem 1.2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            color: var(--primary-dark);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+        
+        .view-all-offers:hover {
+            background: var(--primary-color);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            margin: 0;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+        
+        .offer-carousel-single {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            height: 400px;
+        }
+        
+        .offer-slides-single {
+            display: flex;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        .offer-slide-single {
+            min-width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        
+        .offer-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border: 1px solid var(--glass-border);
+            position: relative;
+        }
+        
+        .offer-image-container {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .offer-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .offer-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+            color: var(--white);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .offer-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .offer-title {
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+            margin: 0 0 0.5rem;
+            font-weight: 600;
+        }
+        
+        .offer-shop {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .offer-shop i {
+            color: var(--primary-color);
+        }
+        
+        .offer-description {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+        
+        .offer-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .offer-discount {
+            font-size: 1.1rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .offer-valid {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .offer-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 0.6rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--white);
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        
+        .offer-button:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+        }
+        
+        .carousel-nav-single {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        
+        .carousel-btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            margin: 0 1rem;
+        }
+        
+        .carousel-btn:hover {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .carousel-dots-single {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--medium-gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .dot.active {
+            background: var(--primary-color);
+            transform: scale(1.2);
+        }
+        
+        /* Shops Section with Category Filter */
+        .shops-section {
+            margin-top: 3rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .category-filter {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .category-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            color: var(--text-color);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        
+        .category-btn:hover {
+            background: var(--primary-light);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+        
+        .category-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+        }
+        
+        .shop-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .shop-card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+            position: relative;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .shop-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--box-shadow-hover);
+        }
+        
+        .shop-card:hover .shop-image {
+            transform: scale(1.05);
+        }
+        
+        .shop-card h2 {
+            color: var(--primary-dark);
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 600;
+            padding: 1.5rem 1.5rem 0.5rem;
+        }
+        
+        .shop-image-container {
+            height: 180px;
+            overflow: hidden;
+        }
+        
+        .shop-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .shop-category {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+            color: var(--white);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin: 0 1.5rem 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .shop-description {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            padding: 0 1.5rem 1.5rem;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* Button Styles */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 1.8rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--white);
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            font-weight: 500;
+            gap: 0.5rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(108, 92, 231, 0.4);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+        }
+        
+        .back-button i {
+            transition: var(--transition);
+        }
+        
+        .back-button:hover i {
+            transform: translateX(-3px);
+        }
+        
+        /* All Offers Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-container {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+        
+        .modal-overlay.active .modal-container {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+        
+        .close-modal:hover {
+            color: var(--secondary-color);
+        }
+        
+        .all-offers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .container {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .shop-cards {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .category-filter {
+                gap: 0.6rem;
+            }
+            
+            .category-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .carousel-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+            
+            .offer-carousel-single {
+                height: 450px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .shop-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-filter {
+                justify-content: center;
+            }
+            
+            .all-offers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .offer-carousel-single {
+                height: 500px;
+            }
+            
+            .offer-image-container {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>{{ mall.name }} Mall</h1>
+                <p class="location"><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> {{ mall.location }}</p>
+            </div>
+            <a href="{% url 'mall_list' %}" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Back to Malls
+            </a>
+        </div>
+        
+        <!-- Compact Search Bar -->
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search for stores..." id="storeSearch">
+        </div>
+        
+        <!-- Single Slide Offers Carousel -->
+        <div class="offers-hero">
+            <div class="offers-header">
+                <h2 class="section-title">Current Offers & Deals</h2>
+                <button class="view-all-offers" id="viewAllOffers">
+                    <i class="fas fa-bullhorn"></i> View All Offers
+                </button>
+            </div>
+            
+            <div class="offer-carousel-single">
+                <div class="offer-slides-single" id="offerSlides">
+                    {% for shop in shops %}
+                        {% for offer in shop.offers.all %}
+                            {% if offer.is_current %}
+                                <div class="offer-slide-single">
+                                    <div class="offer-card">
+                                        <div class="offer-image-container">
+                                            {% if offer.offer_image %}
+                                                <img src="{{ offer.offer_image.url }}" alt="{{ offer.title }}" class="offer-image">
+                                            {% else %}
+                                                <img src="https://via.placeholder.com/400x200?text=Offer+Image" alt="Offer Image" class="offer-image">
+                                            {% endif %}
+                                            <span class="offer-badge">Special Offer</span>
+                                        </div>
+                                        <div class="offer-content">
+                                            <h3 class="offer-title">{{ offer.title }}</h3>
+                                            <div class="offer-shop">
+                                                <i class="fas fa-store"></i>
+                                                {{ shop.name }}
+                                            </div>
+                                            <p class="offer-description">{{ offer.description }}</p>
+                                            <div class="offer-details">
+                                                {% if offer.discount_percentage %}
+                                                    <span class="offer-discount">{{ offer.discount_percentage }}% OFF</span>
+                                                {% elif offer.discount_amount %}
+                                                    <span class="offer-discount">₹{{ offer.discount_amount }} OFF</span>
+                                                {% endif %}
+                                                <span class="offer-valid">Valid till: {{ offer.end_date|date:"d M Y" }}</span>
+                                            </div>
+                                            <a href="{% url 'customer_product_list' shop.id %}" class="offer-button">Visit Shop</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                    
+                    <!-- Default slide if no offers -->
+                    {% if not shops.0.offers.all.exists %}
+                        <div class="offer-slide-single">
+                            <div class="offer-card">
+                                <div class="offer-image-container">
+                                    <img src="https://via.placeholder.com/400x200?text=No+Current+Offers" alt="No Offers" class="offer-image">
+                                </div>
+                                <div class="offer-content">
+                                    <h3 class="offer-title">Check Back Soon</h3>
+                                    <div class="offer-shop">
+                                        <i class="fas fa-store"></i>
+                                        {{ mall.name }} Mall
+                                    </div>
+                                    <p class="offer-description">We don't have any special offers right now, but check back later for exciting deals from our shops!</p>
+                                    <div class="offer-details">
+                                        <span class="offer-discount">Coming Soon</span>
+                                    </div>
+                                    <button class="offer-button" disabled>No Current Offers</button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="carousel-nav-single">
+                    <button class="carousel-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="carousel-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                
+                <div class="carousel-dots-single">
+                    <!-- Dots will be added by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Shops Section with Category Filter -->
+        <div class="shops-section">
+            <h2 class="section-title">Explore Shops</h2>
+            
+            <!-- Category Filter Buttons -->
+            <div class="category-filter">
+                <button class="category-btn active" data-category="all">All Shops</button>
+                {% for category in categories %}
+                    <button class="category-btn" data-category="{{ category|slugify }}">{{ category }}</button>
+                {% endfor %}
+            </div>
+            
+            <!-- Shop Cards -->
+            <div class="shop-cards" id="shopCards">
+                {% for shop in shops %}
+                    <a href="{% url 'customer_product_list' shop.id %}" class="shop-card" data-category="{{ shop.category|slugify }}" data-shopname="{{ shop.name|lower }}">
+                        <div class="shop-image-container">
+                            {% if shop.shop_image %}
+                                <img src="{{ shop.shop_image.url }}" alt="{{ shop.name }}" class="shop-image">
+                            {% else %}
+                                <img src="https://via.placeholder.com/400x200?text=Shop+Image" alt="Shop Image" class="shop-image">
+                            {% endif %}
+                        </div>
+                        <h2>{{ shop.name }}</h2>
+                        <span class="shop-category">{{ shop.category }}</span>
+                        <p class="shop-description">{{ shop.description|default:"No description available." }}</p>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- All Offers Modal -->
+    <div class="modal-overlay" id="allOffersModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="section-title">All Offers at {{ mall.name }}</h2>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="all-offers-grid">
+                {% for shop in shops %}
+                    {% for offer in shop.offers.all %}
+                        {% if offer.is_current %}
+                            <div class="offer-card">
+                                <div class="offer-image-container">
+                                    {% if offer.offer_image %}
+                                        <img src="{{ offer.offer_image.url }}" alt="{{ offer.title }}" class="offer-image">
+                                    {% else %}
+                                        <img src="https://via.placeholder.com/400x200?text=Offer+Image" alt="Offer Image" class="offer-image">
+                                    {% endif %}
+                                    <span class="offer-badge">Special Offer</span>
+                                </div>
+                                <div class="offer-content">
+                                    <h3 class="offer-title">{{ offer.title }}</h3>
+                                    <div class="offer-shop">
+                                        <i class="fas fa-store"></i>
+                                        {{ shop.name }}
+                                    </div>
+                                    <p class="offer-description">{{ offer.description }}</p>
+                                    <div class="offer-details">
+                                        {% if offer.discount_percentage %}
+                                            <span class="offer-discount">{{ offer.discount_percentage }}% OFF</span>
+                                        {% elif offer.discount_amount %}
+                                            <span class="offer-discount">₹{{ offer.discount_amount }} OFF</span>
+                                        {% endif %}
+                                        <span class="offer-valid">Valid till: {{ offer.end_date|date:"d M Y" }}</span>
+                                    </div>
+                                    <a href="{% url 'customer_product_list' shop.id %}" class="offer-button">Visit Shop</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                
+                {% if not shops.0.offers.all.exists %}
+                    <div class="no-offers" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                        <p>No current offers available at this time. Check back later for exciting deals!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize single slide carousel
+            const carousel = document.querySelector('.offer-slides-single');
+            const slides = document.querySelectorAll('.offer-slide-single');
+            const dotsContainer = document.querySelector('.carousel-dots-single');
+            
+            let currentIndex = 0;
+            const slideCount = slides.length;
+            
+            // Create dots
+            for (let i = 0; i < slideCount; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => {
+                    goToSlide(i);
+                });
+                dotsContainer.appendChild(dot);
+            }
+            
+            // Auto slide every 5 seconds
+            let slideInterval = setInterval(nextSlide, 5000);
+            
+            function goToSlide(index) {
+                currentIndex = index;
+                if (currentIndex >= slideCount) {
+                    currentIndex = 0;
+                } else if (currentIndex < 0) {
+                    currentIndex = slideCount - 1;
+                }
+                
+                carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+                
+                // Update active dot
+                document.querySelectorAll('.carousel-dots-single .dot').forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentIndex);
+                });
+                
+                // Reset timer
+                clearInterval(slideInterval);
+                slideInterval = setInterval(nextSlide, 5000);
+            }
+            
+            function nextSlide() {
+                goToSlide(currentIndex + 1);
+            }
+            
+            function prevSlide() {
+                goToSlide(currentIndex - 1);
+            }
+            
+            // Button events
+            document.querySelector('.next-btn').addEventListener('click', nextSlide);
+            document.querySelector('.prev-btn').addEventListener('click', prevSlide);
+            
+            // Pause on hover
+            carousel.addEventListener('mouseenter', () => {
+                clearInterval(slideInterval);
+            });
+            
+            carousel.addEventListener('mouseleave', () => {
+                clearInterval(slideInterval);
+                slideInterval = setInterval(nextSlide, 5000);
+            });
+            
+            // Category Filter Functionality
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            const shopCards = document.querySelectorAll('.shop-card');
+            
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+                    
+                    const category = btn.dataset.category;
+                    
+                    // Filter shop cards
+                    shopCards.forEach(card => {
+                        if (category === 'all' || card.dataset.category === category) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Search Functionality
+            const searchInput = document.getElementById('storeSearch');
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const cards = document.querySelectorAll('.shop-card');
+                
+                cards.forEach(card => {
+                    const shopName = card.dataset.shopname;
+                    if (shopName.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+            
+            // All Offers Modal
+            const viewAllBtn = document.getElementById('viewAllOffers');
+            const modal = document.getElementById('allOffersModal');
+            const closeModalBtn = document.getElementById('closeModal');
+            
+            viewAllBtn.addEventListener('click', () => {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            closeModalBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Shopping Malls</title>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --dark: #2c3e50;
+            --light: rgba(255, 255, 255, 0.9);
+            --gray: #7f8c8d;
+            --white: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --glass: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-highlight: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+            min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(106, 17, 203, 0.2), rgba(37, 117, 252, 0.2));
+            z-index: -1;
+        }
+
+        /* Layout */
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Header */
+        .page-header {
+            background: var(--glass);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex: 1;
+            padding: 1.5rem;
+        }
+
+        /* Side Navigation */
+        .side-nav {
+            width: 280px;
+            background: var(--glass);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-right: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        .side-nav h2 {
+            color: var(--white);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            border-bottom: 1px solid var(--glass-highlight);
+            padding-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group label {
+            display: block;
+            color: var(--white);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            border: 1px solid var(--glass-highlight);
+            border-radius: 8px;
+            background-color: var(--glass);
+            color: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            background-size: 1rem;
+            font-weight: 400;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+        }
+
+        .filter-group select option {
+            background-color: var(--dark);
+            color: var(--white);
+        }
+
+        .reset-filters {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--glass-highlight);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin-top: 1rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .reset-filters:hover {
+            background: rgba(255,255,255,0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Mall Cards Grid */
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mall-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .mall-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(5px);
+        }
+
+        .mall-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .mall-image-container {
+            height: 200px;
+            background: linear-gradient(135deg, #f5f7fa, #e4e8eb);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mall-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .mall-card:hover .mall-image {
+            transform: scale(1.1);
+        }
+
+        .default-mall-image {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(245, 247, 250, 0.8), rgba(228, 232, 235, 0.8));
+        }
+
+        .default-mall-image i {
+            font-size: 3rem;
+            color: var(--gray);
+            opacity: 0.7;
+        }
+
+        .mall-info {
+            padding: 1.5rem;
+            flex: 1;
+            background: var(--card-bg);
+        }
+
+        .mall-info h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .mall-location {
+            display: flex;
+            align-items: center;
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mall-location i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        .mall-rating {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+
+        .mall-rating .stars {
+            color: #FFD700;
+            margin-right: 0.5rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+            background: var(--glass);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            background: var(--glass);
+            color: var(--white);
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            align-self: flex-start;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .back-link:hover {
+            background: var(--glass-highlight);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+
+        .back-link i {
+            margin-right: 0.5rem;
+        }
+
+        /* Mall Count */
+        .mall-count {
+            color: var(--white);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .side-nav {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            
+            .back-link {
+                margin-top: 1rem;
+                margin-left: 0;
+            }
+            
+            .mall-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Floating action button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            border: none;
+        }
+
+        .fab:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .fab i {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <h1>Explore Shopping Malls</h1>
+            <a href="{% url 'customer_dashboard' %}" class="back-link">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </header>
+
+        <div class="main-content">
+            <!-- Side Navigation -->
+            <nav class="side-nav">
+                <h2>Filter Malls</h2>
+                <form method="get" action="{% url 'mall_list' %}" id="filter-form">
+                    <div class="filter-group">
+                        <label for="location">Location</label>
+                        <select name="location" id="location">
+                            <option value="">All Locations</option>
+                            {% for location in locations %}
+                                <option value="{{ location }}" {% if request.GET.location == location %}selected{% endif %}>
+                                    {{ location }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="button" class="reset-filters" onclick="resetFilters()">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset Filters
+                    </button>
+                </form>
+            </nav>
+
+            <!-- Main Content Area -->
+            <div class="content-area">
+                <div class="mall-count">
+                    Showing {{ malls|length }} mall{{ malls|pluralize }}
+                </div>
+                
+                <!-- Mall Cards Grid -->
+                <div class="mall-cards">
+                    {% for mall in malls %}
+                        <div class="mall-card" onclick="window.location.href='{% url 'shop_list' mall.id %}'">
+                            <div class="mall-image-container">
+                                {% if mall.image %}
+                                    <img src="{{ mall.image.url }}" alt="{{ mall.name }}" class="mall-image">
+                                {% else %}
+                                    <div class="default-mall-image">
+                                        <i class="bi bi-building"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mall-info">
+                                <h2>{{ mall.name }}</h2>
+                                <div class="mall-location">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span>{{ mall.location }}</span>
+                                </div>
+                                <div class="mall-rating">
+                                    <div class="stars">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-half"></i>
+                                    </div>
+                                    <span>4.5 (120 reviews)</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="empty-state">
+                            <i class="bi bi-building"></i>
+                            <h3>No Malls Found</h3>
+                            <p>There are no malls matching your filters.</p>
+                            <button class="reset-filters" onclick="resetFilters()">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset Filters
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Action Button -->
+        <button class="fab" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            <i class="bi bi-arrow-up"></i>
+        </button>
+    </div>
+
+    <script>
+        // Auto-submit form when filters change
+        document.getElementById('location').addEventListener('change', function() {
+            document.getElementById('filter-form').submit();
+        });
+
+        // Reset all filters
+        function resetFilters() {
+            document.getElementById('location').value = '';
+            document.getElementById('filter-form').submit();
+        }
+        
+        // Show/hide floating button based on scroll position
+        window.addEventListener('scroll', function() {
+            const fab = document.querySelector('.fab');
+            if (window.scrollY > 300) {
+                fab.style.display = 'flex';
+            } else {
+                fab.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

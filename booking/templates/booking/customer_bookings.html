@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings</title>
+<style>
+    /* General Page Styles */
+body {
+    font-family: "Poppins", sans-serif;
+    background: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* Container */
+.container {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    width: 90%;
+    max-width: 900px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Title */
+.title {
+    font-size: 26px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Table Container */
+.table-container {
+    overflow-x: auto;
+}
+
+/* Table */
+.booking-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+/* Table Head */
+.booking-table thead {
+    background: #333;
+    color: white;
+}
+
+.booking-table th {
+    padding: 12px;
+    text-align: left;
+}
+
+/* Table Rows */
+.booking-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Hover Effect */
+.booking-table tr:hover {
+    background: #f8f9fa;
+}
+
+/* Badges */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+/* Badge Colors */
+.pending {
+    background: #ffeb3b;
+    color: #333;
+}
+.processing {
+    background: #03a9f4;
+    color: white;
+}
+.shipped {
+    background: #673ab7;
+    color: white;
+}
+.delivered {
+    background: #4caf50;
+    color: white;
+}
+.cancelled {
+    background: #f44336;
+    color: white;
+}
+
+/* View Button */
+.view-btn {
+    display: inline-block;
+    background: #007bff;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.view-btn i {
+    margin-right: 6px;
+}
+
+/* Hover Effect */
+.view-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Alert Box */
+.alert {
+    background: #ffecb3;
+    color: #333;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+/* Back Button */
+.back-btn {
+    display: inline-block;
+    background: #6c757d;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    margin-top: 20px;
+    transition: 0.3s;
+}
+
+.back-btn i {
+    margin-right: 6px;
+}
+
+/* Hover Effect */
+.back-btn:hover {
+    background: #545b62;
+    transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .booking-table th, .booking-table td {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+</style>
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="title">📋 My Bookings</h1>
+
+        {% if bookings %}
+        <div class="table-container">
+            <table class="booking-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Shop</th>
+                        <th>Booking Date</th>
+                        <th>Period</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.product.name }}</td>
+                        <td>{{ booking.shop.store.name }}</td>
+                        <td>{{ booking.booking_date|date:"M d, Y" }}</td>
+                        <td>
+                            {{ booking.start_time|date:"M d, Y H:i" }}<br>
+                            to<br>
+                            {{ booking.end_time|date:"M d, Y H:i" }}
+                        </td>
+                        <td>
+                            <span class="badge {% if booking.status == 'pending' %}pending
+                            {% elif booking.status == 'processing' %}processing
+                            {% elif booking.status == 'shipped' %}shipped
+                            {% elif booking.status == 'delivered' %}delivered
+                            {% else %}cancelled{% endif %}">
+                                {{ booking.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'booking_details' booking.id %}" class="view-btn">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert">
+            <i class="fas fa-info-circle"></i> You don't have any bookings yet.
+        </div>
+        {% endif %}
+
+        <a href="{% url 'customer_dashboard' %}" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+</body>
+</html>

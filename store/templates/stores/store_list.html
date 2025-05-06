@@ -1,0 +1,9 @@
+<h1>Stores in {{ mall.name }}</h1>
+<ul>
+    {% for store in stores %}
+        <li>
+            <a href="{% url 'product_list' store.id %}">{{ store.name }}</a>
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'create_store' mall.id %}">Create New Store</a>
