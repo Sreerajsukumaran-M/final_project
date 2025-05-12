@@ -3,139 +3,951 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create a New Shop</title>
+    <title>Create a New Shop | Marketplace Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Global Styles */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary: #f72585;
+            --success: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #a1c4fd, #c2e9fb);
-            background-size: 400% 400%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #333;
-            animation: gradientAnimation 15s ease infinite;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Floating background elements */
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
             overflow: hidden;
         }
 
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .bg-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            filter: blur(40px);
         }
 
-        /* Main Container */
-        .main-container {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            padding: 40px;
+        .bg-element-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--primary);
+            top: -200px;
+            left: -200px;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .bg-element-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--secondary);
+            bottom: -100px;
+            right: -100px;
+            animation: float 18s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(50px, 50px); }
+            50% { transform: translate(0, 100px); }
+            75% { transform: translate(-50px, 50px); }
+        }
+
+        /* Main container */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
             width: 100%;
-            max-width: 500px;
-            text-align: center;
+            max-width: 600px;
+            overflow: hidden;
+            transform: translateY(20px);
             opacity: 0;
-            transform: translateY(-20px);
-            animation: fadeIn 0.8s ease-in-out forwards;
+            animation: fadeInUp 0.6s forwards 0.3s;
+            position: relative;
         }
 
-        @keyframes fadeIn {
+        @keyframes fadeInUp {
             to {
-                opacity: 1;
                 transform: translateY(0);
+                opacity: 1;
             }
         }
 
-        /* Header */
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            color: #2c3e50;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1.5rem 2rem;
+            position: relative;
         }
 
-        /* Form Styles */
-        form {
+        .card-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+            transition: var(--transition);
+        }
+
+        .step.active {
+            background: white;
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .step.completed {
+            background: var(--success);
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* Form styles */
+        .form-step {
+            display: none;
+            animation: fadeIn 0.4s forwards;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: #f8f9fa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            background-color: white;
+        }
+
+        .form-control::placeholder {
+            color: var(--gray);
+            opacity: 0.6;
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .input-icon .form-control {
+            padding-left: 3rem;
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: #f0f2ff;
+        }
+
+        .btn-icon {
+            font-size: 1rem;
+        }
+
+        /* File upload */
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload-btn {
+            width: 100%;
+            padding: 1.5rem;
+            border: 2px dashed #e0e0e0;
+            border-radius: var(--border-radius);
+            background: #f8f9fa;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-upload-btn:hover {
+            border-color: var(--primary);
+            background: #f0f2ff;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-preview {
+            display: none;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .file-upload-preview img {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: var(--border-radius);
+            object-fit: cover;
+        }
+
+        /* Toggle switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e0e0e0;
+            transition: var(--transition);
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .card {
+                max-width: 100%;
+            }
+            
+            .card-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Confirmation animation */
+        .confirmation {
+            text-align: center;
+            padding: 2rem;
+            display: none;
+        }
+
+        .confirmation i {
+            font-size: 5rem;
+            color: var(--success);
+            margin-bottom: 1.5rem;
+            animation: bounceIn 0.8s;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.1); opacity: 0; }
+            60% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        .confirmation h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+        }
+
+        .confirmation p {
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        /* Tags input */
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            background: #f8f9fa;
+            min-height: 50px;
+        }
+
+        .tag {
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+
+        .tags-input input {
+            flex: 1;
+            min-width: 100px;
+            border: none;
+            background: transparent;
+            outline: none;
+            padding: 0.5rem;
+        }
+
+        /* Social media inputs */
+        .social-inputs {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 1rem;
         }
 
-        form p {
-            margin: 0;
+        .social-input {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        form label {
-            font-size: 1.1em;
-            color: #2c3e50;
-            margin-bottom: 5px;
-            display: block;
-            text-align: left;
+        .social-input i {
+            width: 40px;
+            height: 40px;
+            background: #f0f2ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
         }
 
-        form input, form select, form textarea {
+        /* Map container */
+        .map-container {
+            height: 200px;
+            background: #e0e0e0;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .map-placeholder {
             width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            background: #fff;
-            color: #333;
-            font-size: 1em;
-            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            color: var(--gray);
         }
 
-        form input:focus, form select:focus, form textarea:focus {
-            border-color: #6a11cb;
-            box-shadow: 0 0 10px rgba(106, 17, 203, 0.3);
-            outline: none;
+        /* Rating */
+        .rating {
+            display: flex;
+            gap: 0.5rem;
         }
 
-        /* Button Styles */
-        button[type="submit"] {
-            padding: 12px 24px;
-            font-size: 1.1em;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
+        .rating i {
+            color: #e0e0e0;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(106, 17, 203, 0.3);
+            transition: var(--transition);
+            font-size: 1.5rem;
         }
 
-        button[type="submit"]:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(106, 17, 203, 0.5);
-        }
-
-        /* Back Link */
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            font-size: 1em;
-            color: #6a11cb;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .back-link:hover {
-            color: #2575fc;
-            text-decoration: underline;
+        .rating i.active {
+            color: #ffc107;
         }
     </style>
 </head>
 <body>
-    <!-- Main Container -->
-    <div class="main-container">
-        <h1>Create a New Shop</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Create Shop</button>
-        </form>
-        <a href="{% url 'mall_dashboard' %}" class="back-link">Back to Dashboard</a>
+    <div class="bg-elements">
+        <div class="bg-element bg-element-1"></div>
+        <div class="bg-element bg-element-2"></div>
     </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Create Your Shop</h1>
+                <p>Fill in the details to set up your online store</p>
+                
+                <div class="progress-steps">
+                    <div class="step active">1</div>
+                    <div class="step">2</div>
+                    <div class="step">3</div>
+                    <div class="step">4</div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <!-- Step 1: Basic Information -->
+                <div class="form-step active" id="step-1">
+                    <div class="form-group">
+                        <label for="shop-name">Shop Name</label>
+                        <div class="input-icon">
+                            <i class="fas fa-store"></i>
+                            <input type="text" id="shop-name" class="form-control" placeholder="Enter your shop name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shop-category">Shop Category</label>
+                        <select id="shop-category" class="form-control" required>
+                            <option value="" disabled selected>Select a category</option>
+                            <option value="fashion">Fashion & Apparel</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="home">Home & Garden</option>
+                            <option value="beauty">Beauty & Cosmetics</option>
+                            <option value="food">Food & Beverages</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shop-description">Shop Description</label>
+                        <textarea id="shop-description" class="form-control" rows="4" placeholder="Tell customers about your shop..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Shop Logo</label>
+                        <div class="file-upload">
+                            <div class="file-upload-btn">
+                                <i class="fas fa-cloud-upload-alt fa-2x" style="margin-bottom: 10px;"></i>
+                                <p>Drag & drop your logo here or click to browse</p>
+                                <p class="text-muted">Recommended size: 500x500px (max 2MB)</p>
+                            </div>
+                            <input type="file" id="shop-logo" class="file-upload-input" accept="image/*">
+                            <div class="file-upload-preview" id="logo-preview"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="button" class="btn btn-primary btn-next" data-next="step-2">
+                            Next <i class="fas fa-arrow-right btn-icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Contact Information -->
+                <div class="form-step" id="step-2">
+                    <div class="form-group">
+                        <label for="shop-email">Email Address</label>
+                        <div class="input-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="shop-email" class="form-control" placeholder="your@shop.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shop-phone">Phone Number</label>
+                        <div class="input-icon">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" id="shop-phone" class="form-control" placeholder="+1 (123) 456-7890" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shop-address">Physical Address</label>
+                        <input type="text" id="shop-address" class="form-control" placeholder="Enter your shop address">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location Map</label>
+                        <div class="map-container">
+                            <div class="map-placeholder">
+                                <i class="fas fa-map-marker-alt fa-2x" style="margin-right: 10px;"></i>
+                                <span>Shop location will appear here</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Social Media Links</label>
+                        <div class="social-inputs">
+                            <div class="social-input">
+                                <i class="fab fa-facebook-f"></i>
+                                <input type="text" class="form-control" placeholder="Facebook profile/page URL">
+                            </div>
+                            <div class="social-input">
+                                <i class="fab fa-instagram"></i>
+                                <input type="text" class="form-control" placeholder="Instagram profile URL">
+                            </div>
+                            <div class="social-input">
+                                <i class="fab fa-twitter"></i>
+                                <input type="text" class="form-control" placeholder="Twitter profile URL">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="button" class="btn btn-secondary btn-prev" data-prev="step-1">
+                            <i class="fas fa-arrow-left btn-icon"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-primary btn-next" data-next="step-3">
+                            Next <i class="fas fa-arrow-right btn-icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Business Details -->
+                <div class="form-step" id="step-3">
+                    <div class="form-group">
+                        <label for="business-type">Business Type</label>
+                        <select id="business-type" class="form-control" required>
+                            <option value="" disabled selected>Select business type</option>
+                            <option value="individual">Individual/Sole Proprietor</option>
+                            <option value="partnership">Partnership</option>
+                            <option value="llc">LLC</option>
+                            <option value="corporation">Corporation</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tax-id">Tax ID/EIN</label>
+                        <input type="text" id="tax-id" class="form-control" placeholder="Enter your tax identification number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="business-registration">Business Registration Number</label>
+                        <input type="text" id="business-registration" class="form-control" placeholder="Enter your business registration number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="opening-hours">Opening Hours</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <select class="form-control">
+                                <option>Monday</option>
+                                <option>Tuesday</option>
+                                <option>Wednesday</option>
+                                <option>Thursday</option>
+                                <option>Friday</option>
+                                <option>Saturday</option>
+                                <option>Sunday</option>
+                            </select>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="time" class="form-control">
+                                <span style="display: flex; align-items: center;">to</span>
+                                <input type="time" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Shop Tags (Keywords)</label>
+                        <div class="tags-input" id="tags-container">
+                            <input type="text" id="tag-input" placeholder="Type and press enter to add tags">
+                        </div>
+                        <small class="text-muted">Add keywords that describe your shop (e.g. handmade, organic, vintage)</small>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="button" class="btn btn-secondary btn-prev" data-prev="step-2">
+                            <i class="fas fa-arrow-left btn-icon"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-primary btn-next" data-next="step-4">
+                            Next <i class="fas fa-arrow-right btn-icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Payment & Finalization -->
+                <div class="form-step" id="step-4">
+                    <div class="form-group">
+                        <label>Payment Methods</label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+                            <label class="toggle-label">
+                                <input type="checkbox" checked> Credit/Debit Cards
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" checked> PayPal
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox"> Bank Transfer
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox"> Cash on Delivery
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shipping-options">Shipping Options</label>
+                        <select id="shipping-options" class="form-control" multiple style="height: auto;">
+                            <option value="standard" selected>Standard Shipping</option>
+                            <option value="express">Express Shipping</option>
+                            <option value="free">Free Shipping</option>
+                            <option value="local">Local Pickup</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="return-policy">Return Policy</label>
+                        <textarea id="return-policy" class="form-control" rows="4" placeholder="Describe your return policy...">30-day money back guarantee. Items must be unused and in original packaging.</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="terms-agreement" required>
+                                <span class="toggle-slider"></span>
+                            </div>
+                            I agree to the Terms of Service and Privacy Policy
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="newsletter" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                            Subscribe to our newsletter for tips and updates
+                        </label>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="button" class="btn btn-secondary btn-prev" data-prev="step-3">
+                            <i class="fas fa-arrow-left btn-icon"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-primary" id="submit-form">
+                            Create Shop <i class="fas fa-check btn-icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirmation Screen (hidden initially) -->
+                <div class="confirmation" id="confirmation">
+                    <i class="fas fa-check-circle"></i>
+                    <h2>Shop Created Successfully!</h2>
+                    <p>Your shop is now ready to go live. Start adding products and manage your store from the dashboard.</p>
+                    <button class="btn btn-primary" id="go-to-dashboard">
+                        Go to Dashboard <i class="fas fa-tachometer-alt btn-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Form navigation
+            const nextButtons = document.querySelectorAll('.btn-next');
+            const prevButtons = document.querySelectorAll('.btn-prev');
+            const formSteps = document.querySelectorAll('.form-step');
+            const steps = document.querySelectorAll('.step');
+            const submitButton = document.getElementById('submit-form');
+            const confirmationScreen = document.getElementById('confirmation');
+            const goToDashboard = document.getElementById('go-to-dashboard');
+
+            let currentStep = 0;
+
+            // Next button functionality
+            nextButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const nextStepId = this.getAttribute('data-next');
+                    const nextStep = document.getElementById(nextStepId);
+                    
+                    // Validate current step before proceeding
+                    if (validateStep(currentStep)) {
+                        // Hide current step
+                        formSteps[currentStep].classList.remove('active');
+                        
+                        // Show next step
+                        nextStep.classList.add('active');
+                        
+                        // Update progress steps
+                        steps[currentStep].classList.remove('active');
+                        steps[currentStep].classList.add('completed');
+                        currentStep++;
+                        steps[currentStep].classList.add('active');
+                    }
+                });
+            });
+
+            // Previous button functionality
+            prevButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const prevStepId = this.getAttribute('data-prev');
+                    const prevStep = document.getElementById(prevStepId);
+                    
+                    // Hide current step
+                    formSteps[currentStep].classList.remove('active');
+                    
+                    // Show previous step
+                    prevStep.classList.add('active');
+                    
+                    // Update progress steps
+                    steps[currentStep].classList.remove('active');
+                    currentStep--;
+                    steps[currentStep + 1].classList.remove('completed');
+                    steps[currentStep].classList.add('active');
+                });
+            });
+
+            // Form submission
+            submitButton.addEventListener('click', function() {
+                if (validateStep(currentStep)) {
+                    // In a real app, you would submit the form data here
+                    
+                    // Show confirmation screen
+                    formSteps[currentStep].classList.remove('active');
+                    confirmationScreen.style.display = 'block';
+                    
+                    // Update progress steps
+                    steps[currentStep].classList.remove('active');
+                    steps[currentStep].classList.add('completed');
+                }
+            });
+
+            // Go to dashboard
+            goToDashboard.addEventListener('click', function() {
+                // In a real app, this would redirect to the dashboard
+                alert('Redirecting to dashboard...');
+            });
+
+            // Step validation
+            function validateStep(stepIndex) {
+                let isValid = true;
+                const currentStep = formSteps[stepIndex];
+                
+                // Check required fields in current step
+                const requiredFields = currentStep.querySelectorAll('[required]');
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.style.borderColor = '#f72585';
+                        setTimeout(() => {
+                            field.style.borderColor = '#e0e0e0';
+                        }, 2000);
+                        isValid = false;
+                    }
+                });
+                
+                return isValid;
+            }
+
+            // File upload preview
+            const fileUpload = document.getElementById('shop-logo');
+            const logoPreview = document.getElementById('logo-preview');
+            
+            fileUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        logoPreview.innerHTML = `<img src="${event.target.result}" alt="Shop Logo">`;
+                        logoPreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Tags input functionality
+            const tagsContainer = document.getElementById('tags-container');
+            const tagInput = document.getElementById('tag-input');
+            
+            tagInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim()) {
+                    const tag = document.createElement('div');
+                    tag.className = 'tag';
+                    tag.innerHTML = `
+                        ${this.value.trim()}
+                        <span class="tag-remove">&times;</span>
+                    `;
+                    tagsContainer.insertBefore(tag, tagInput);
+                    this.value = '';
+                    
+                    // Add remove functionality
+                    tag.querySelector('.tag-remove').addEventListener('click', function() {
+                        tag.remove();
+                    });
+                }
+            });
+
+            // Rating functionality
+            const ratingStars = document.querySelectorAll('.rating i');
+            if (ratingStars.length > 0) {
+                ratingStars.forEach(star => {
+                    star.addEventListener('click', function() {
+                        const value = this.getAttribute('data-value');
+                        ratingStars.forEach(s => {
+                            if (s.getAttribute('data-value') <= value) {
+                                s.classList.add('active');
+                            } else {
+                                s.classList.remove('active');
+                            }
+                        });
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>

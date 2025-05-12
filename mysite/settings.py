@@ -140,3 +140,7 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'media/')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+RAZORPAY_KEY_ID = "rzp_test_SKA7pG9S47EI84"
+RAZORPAY_KEY_SECRET = "ATnSwK9297SQ9AyevVPxANWC"
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

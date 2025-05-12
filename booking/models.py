@@ -6,9 +6,8 @@ class Booking(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('processing', 'Processing'),
-        ('shipped', 'Shipped'),
-        ('delivered', 'Delivered'),
-        ('cancelled', 'Cancelled'),
+        ('ready', 'Ready'),
+        ('delivered', 'deliverd'),
     ]
 
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='customer_bookings')
@@ -19,6 +18,12 @@ class Booking(models.Model):
     end_time = models.DateTimeField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     notes = models.TextField(blank=True)
+
+    # 🔽 Payment-related fields
+    payment_status = models.CharField(max_length=20, default='pending')  # pending, paid, failed
+    razorpay_order_id = models.CharField(max_length=100, blank=True, null=True)
+    razorpay_payment_id = models.CharField(max_length=100, blank=True, null=True)
+    razorpay_signature = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return f"Booking #{self.id} - {self.product.name}"
