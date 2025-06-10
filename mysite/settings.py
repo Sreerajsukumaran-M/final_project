@@ -144,3 +144,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 RAZORPAY_KEY_ID = "rzp_test_SKA7pG9S47EI84"
 RAZORPAY_KEY_SECRET = "ATnSwK9297SQ9AyevVPxANWC"
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp-relay.brevo.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = '8dad85002@smtp-brevo.com'      # Your SMTP login (not your Gmail)
+EMAIL_HOST_PASSWORD = 'FwUbtfT9R5Z1gXmG'          # Your SMTP Master Password or SMTP key value
+
+DEFAULT_FROM_EMAIL = 'sreerajun70@gmail.com'       # Your email that appears as sender (can be different from SMTP login)
+

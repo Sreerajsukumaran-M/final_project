@@ -3,11 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from product.models import Product
+from django.core.mail import send_mail
+import razorpay
+
 from .forms import BookingForm, BookingStatusForm
 from .models import Booking
+from product.models import Product
 from store.models import Store
-import razorpay
+
 
 @login_required
 def create_booking(request, product_id):
@@ -32,6 +35,7 @@ def create_booking(request, product_id):
         'shop': shop
     })
 
+
 @login_required
 def initiate_payment(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
@@ -39,7 +43,7 @@ def initiate_payment(request, booking_id):
     client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
     DATA = {
-        "amount": int(booking.product.price * 100),  # price in paise
+        "amount": int(booking.product.price * 100),
         "currency": "INR",
         "receipt": f"booking_rcptid_{booking.id}",
         "payment_capture": 1
@@ -54,6 +58,7 @@ def initiate_payment(request, booking_id):
         'order': order,
         'razorpay_key_id': settings.RAZORPAY_KEY_ID
     })
+
 
 @csrf_exempt
 def payment_success(request):
@@ -73,15 +78,34 @@ def payment_success(request):
 
         return redirect('booking_details', booking_id=booking_id)
 
+
 @login_required
 def booking_details(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     is_shop_owner = request.user == booking.shop
 
     if request.method == 'POST' and is_shop_owner:
+        old_status = booking.status
         form = BookingStatusForm(request.POST, instance=booking)
         if form.is_valid():
             form.save()
+
+            if old_status != 'ready' and form.cleaned_data['status'] == 'ready':
+                product_name = booking.product.name
+                shop_name = booking.product.store.name
+                customer_email = booking.customer.email
+
+                subject = "Your order is ready for pickup"
+                message = f"The '{product_name}' is ready to deliver from '{shop_name}'. Please come and take the order."
+
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [customer_email],
+                    fail_silently=False,
+                )
+
             messages.success(request, 'Booking status updated!')
             return redirect('booking_details', booking_id=booking.id)
     else:
@@ -93,13 +117,12 @@ def booking_details(request, booking_id):
         'is_shop_owner': is_shop_owner
     })
 
+
 @login_required
 def shop_bookings(request):
     if not hasattr(request.user, 'store'):
         messages.error(request, "You don't have a shop")
         return redirect('index')
 
-    # Only show bookings that are NOT delivered
     bookings = Booking.objects.filter(shop=request.user).exclude(status='delivered').order_by('-booking_date')
-    
     return render(request, 'booking/shop_bookings.html', {'bookings': bookings})
